@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>American Idol Performance</title>
+    <link rel="stylesheet" type="text/css" href="media/css/style.min.css" />
+    <link rel="stylesheet" type="text/css" href="media/css/leaderboard.min.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="media/js/model.min.js"></script>
+    <script type="text/javascript" src="media/js/view.min.js"></script>
+    <script type="text/javascript" src="media/js/controller.min.js"></script>
+    <script type="text/javascript" src="media/js/jquery.cookie.min.js"></script>
+    <script type="text/javascript" language="JavaScript">
+        var parameters = {};
+        window.location.href.replace(
+                new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+                function($0, $1, $2, $3) { parameters[$1] = $3; }
+        );
+       function environment(){
+            var result = '';
+            var exp = /(?:http:\/\/)?(?:([^.]+)\.)?peel\.com/i;
+            var results = exp.exec(window.location.href);
+            if (results && results.length)
+            {
+                results = results[1].split('-');
+                if (results.length > 1) result = '-' + results[1];
+            }
+            return result;
+        }
+      $(document).ready(function() {
+            Controller.setOptions({
+                endpoint: 'https://graph' + environment() + '.peel.com/',
+                containers: {
+                    competitorName:'name',
+					score: 'score',
+					rounds: 'rounds',
+                    remove: 'intro'
+               	},
+                insightsOptions:{
+                    context:3002,
+                    loadedApp:6015,
+
+                    sessionIdentifier: parameters.sessionid || 'B3EB3A50-256D-42FB-82CC-7A503337334F',
+                    userIdentifier: parameters.userid || '1',
+                    accessToken: parameters.access_token || 'dc68bf95d8da43e1bbd53b6a10f2ad6e',
+                    endpoint:'http://insightsqa.zelfy.com/insights/rlog'
+                    /*https://ai-dev.peel.com/?sessionid=B3EB3A50-256D-42FB-82CC-7A503337334F&userid=998&access_token=dc68bf95d8da43e1bbd53b6a10f2ad6e*/
+                    /* http://insightsstaging.zelfy.com/inisghts/rlog */
+                    /* http://insightsprod.zelfy.com/insights/rlog */
+                },
+                scoreOptions:{
+                    key: 'audienceScore',
+                    max: 10
+                },
+                modelOptions:{
+				 	sortType: 'numeric',
+				   	sortOrder: 'desc',
+				   	sortKey: 'audienceScore'
+                },
+                viewOptions:{
+                   container: 'rounds',
+                   template: 'round',
+                   fields: [
+                       'competitor_photo',
+                       'name',
+                       'index',
+                       'score'
+
+                   ]
+               }
+             });
+            var url = Controller.options.endpoint + 'competitions/last1';
+            $.ajax({url: url, dataType: 'json', success: function(data, status, request){
+
+                /* Request dataEndpoint/id/path and find rounds in key */
+                var competition_id = '';
+                if (data.data && data.data.length && data.data[0].id) competition_id = data.data[0].id;
+                if (competition_id.length) Controller.request(competition_id, 'leaderboard');
+              }});
+
+        });
+     </script>
+</head>
+<body>
+    <div id='container' style="position:fixed"></div>
+    <div id='app'>
+        <div id="rounds" style="position:absolute">
+            <div id="intro">Check back after the<br />first performance.</div>
+        </div>
+    </div>
+
+    <div style="visibility: hidden;">
+        <div id='round' class='round_sm'>
+            <img id='competitor_photo' alt=""/>
+            <div><input type="text" id="name" class="competitor_name" /></div>
+            <div class="scores">
+                <input type="text" id='index' />
+                <div class="score_container">
+                    <div id="score"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+ </body>
+</html>

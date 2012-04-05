@@ -1,0 +1,7 @@
+
+h1{font-size:18px;margin:12px;}
+p{font-size:14px;margin:10px 30px;text-align:left;}
+
+#photo_rater { margin: 10px auto;padding:0px;width:280px;}
+#rater {float:right;margin-top:6px;width:214px;}
+#photo{display:block;width:60px;height:61px;}

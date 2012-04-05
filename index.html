@@ -1,0 +1,331 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>American Idol Performance</title>
+    <link rel="stylesheet" type="text/css" href="media/css/style.min.css" />
+    <link rel="stylesheet" type="text/css" href="media/css/1x.min.css" media="only screen and (-webkit-device-pixel-ratio:1)">
+    <link rel="stylesheet" type="text/css" href="media/css/2x.min.css" media="only screen and (-webkit-min-device-pixel-ratio:2)">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="media/js/jquery.cookie.min.js"></script>
+    <script type="text/javascript" src="media/js/noclickdelay.min.js"></script>
+    <script type="text/javascript" src="media/js/model.min.js"></script>
+    <script type="text/javascript" src="media/js/view.min.js"></script>
+    <script type="text/javascript" src="media/js/controller.min.js"></script>
+    <script type="text/javascript" src="media/js/swipe.min.js"></script>
+    <script type="text/javascript" language="JavaScript">
+        var ratio = (window.devicePixelRatio >= 2 ? '@2x' : '');
+        var parameters = {};
+        window.location.href.replace(
+                new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+                function($0, $1, $2, $3) { parameters[$1] = $3; }
+        );
+        function environment(){
+
+            // return '-ci';
+            var result = '';
+            var exp = /(?:http:\/\/)?(?:([^.]+)\.)?peel\.com/i;
+            var results = exp.exec(window.location.href);
+            if (results && results.length)
+            {
+                results = results[1].split('-');
+                if (results.length > 1) result = '-' + results[1];
+            }
+            return result;
+        }
+        $(document).ready(function() {
+        	new NoClickDelay(document.getElementById('container'));
+            Controller.setOptions({
+
+                competitorOptions:{
+                    disabled_nay: 'competitor_btn_nay_disabled',
+                    disabled_yay: 'competitor_btn_yay_disabled'
+                },
+                judgeOptions:{
+                    disabled_nay: 'judge_btn_nay_disabled',
+                    disabled_yay: 'judge_btn_yay_disabled'
+                },
+
+                insightsOptions:{
+                    sessionIdentifier: parameters.sessionid || 'B3EB3A50-256D-42FB-82CC-7A503337334F',
+                    userIdentifier: parameters.userid || '1',
+                    accessToken: parameters.access_token || 'dc68bf95d8da43e1bbd53b6a10f2ad6e',
+
+                    endpoint:'http://insights' + (environment().length ? 'qa' : 'prod') + '.zelfy.com/insights/rlog'
+                    /*https://ai-dev.peel.com/?sessionid=B3EB3A50-256D-42FB-82CC-7A503337334F&userid=998&access_token=dc68bf95d8da43e1bbd53b6a10f2ad6e*/
+                    /* http://insightsqa.zelfy.com/insights/rlog */
+                    /* http://insightsstaging.zelfy.com/inisghts/rlog */
+                    /* http://insightsprod.zelfy.com/insights/rlog */
+                },
+                endpoint: 'https://graph' + environment() + '.peel.com/',
+                containers: {/* id attributes from particular tags in this document */
+                    competitorBtnNay:'competitor_btn_nay',
+                    competitorBtnYay:'competitor_btn_yay',
+                    competitorMeterNay: 'competitor_meter_nay',
+                    competitorMeterYay: 'competitor_meter_yay',
+                    competitorName:'competitor_name',
+                    completed:'popup',
+                    cardCompleted:'card_completed',
+                    judges: 'judges',
+                    navigation:'nav_container',
+                    rounds: 'rounds',
+                    swipe: 'rounds',
+                    judgeBtnNay: 'judge_btn_nay',
+                    judgeBtnYay: 'judge_btn_yay',
+                    judgeMeterYay: 'judge_meter_yay',
+                    judgeMeterNay: 'judge_meter_nay',
+                    judgeName:'judge_name',
+					roundHide:'badge',
+                    remove: 'card_zero',
+                    link:'website'
+                },
+                modelOptions:{
+                    competitorKeyNay: 'totalBoos',
+                    competitorKeyYay: 'totalCheers',
+                    sortKey:'created',
+                    sortOrder:'asc',
+                    sortType:'numeric',
+                    judgeKeyNay: 'totalBoos',
+                    judgeKeyYay: 'totalCheers'
+                },
+                popupOptions:{
+                  active:'popup_active',
+                  inactive:'popup_inactive'
+                },
+                navigationOptions:{
+                    pageOn: 'nav_selected'
+                },
+                viewOptions: [
+                    {
+                        container: 'nav_container',
+                        template:'nav'
+                    },
+                    {
+                        container: 'rounds',
+                        template: 'round',
+                        fields: [
+                            'competitor_photo',
+                            'competitor_name',
+                            'what',
+                            'competitor_btn_yay',
+                            'competitor_btn_nay',
+                            'competitor_meter_yay',
+                            'competitor_meter_nay',
+                            'totalCheers',
+                            'totalBoos',
+                            'popup',
+                            'website',
+                            'badge'
+                        ],
+                        viewOptions:{
+                            container: 'judges',
+                            template: 'judge',
+                            fields: [
+                                'judge_name',
+                                'judge_photo',
+                                'judge_meter_yay',
+                                'judge_meter_nay',
+                                'judge_btn_nay',
+                                'judge_btn_yay'
+                            ]
+                        }
+                    }
+                ]
+            });
+
+            var url = Controller.options.endpoint + 'participants';
+            $.ajax({url: url, dataType: 'json', success: function(data, status, request){
+
+                var i,z;
+                var participants = [];
+
+                z = data.data.length;
+                for (i = 0; i < z; i++)
+                {
+                    if (data.data[i].type == 'competitor') participants.push(data.data[i]);
+                }
+
+                var html = '<table><tr>';
+
+                var x = Math.min(window.devicePixelRatio,2);
+                var dims = (x * 59) + 'x' + (x * 60);
+
+                var i,z,participant;
+                z = Math.min(12, participants.length);
+
+                for (i=0;i<z;i++)
+                {
+                    participant = participants[i];
+                    if ( ! ((i + 4) % 4)) html += '</tr><tr>';
+                    html += '<td><img alt="" class="competitor_photo" src="' + Controller.options.endpoint + participant.id + '/picture/' + dims + '" />';
+                    if (participant.tags && participant.tags.length){
+                        html += '<div class="voted_off">' + participant.tags[0] + '</div>';
+                    }
+                    html += '</td>';
+                }
+                html += '</tr></table>';
+                var card_zero = $('#card_zero_content');
+                if (card_zero.length) card_zero.append(html);
+
+                var url = Controller.options.endpoint + 'competitions/last1';
+                $.ajax({url: url, dataType: 'json', success: function(data, status, request){
+
+                    /* Request dataEndpoint/id/path and find rounds in key */
+
+                    if (data.data && data.data.length && data.data[0].id) Controller.options.competition = data.data[0].id;
+                    if (Controller.options.competition.length){
+                        Controller.request(Controller.options.competition);
+                        pubNubSubscribe();
+                    }
+
+                }});
+            }});
+        });
+
+
+    </script>
+
+</head>
+<body>
+<div id='container'>
+    <div id='card_completed' style='display: none;'>
+        <div class='popup_active' style="position:absolute;top:54px;left:95px;"></div>
+        <div id="completed_content">
+            <div class='completed_lg' style="margin:0;">Win 4 Tickets to the Idols Summer Tour</div>
+            <div class='completed_lg'>To Earn 1 Entry:</div>
+            <div class='popup_active'></div>
+
+
+            <div class='completed_md'>Complete a scorecard by cheering or booing for the singer and each judge.</div>
+            <div class='completed_lg'>To Earn 10 Entries:</div>
+            <script type="text/javascript">
+                document.write('<img style="float:left;margin-left:6px;" src="media/img/InviteEnvelope' + ratio + '.png" width="20" height="14" alt="" />');
+            </script>
+            <div class='completed_md'>Invite friends to join you on Peel.</div>
+            <div class="completed_sm">Note: You must be signed into Peel to earn entries.</div>
+
+
+        </div>
+    </div>
+	<div id="rounds">
+		<div id='card_zero' class='round'>
+			<div id='card_zero_content' class='round_content'>
+
+                <div class="loading">
+                    <script type="text/javascript">
+                        document.write('<img src="media/img/SpinnerGray' + ratio + '.gif" width="20" height="20" alt="" />');
+                    </script>
+                   </div>
+				<div class="loading">Get ready to cheer and boo<br>like crazy.</div>
+			</div>
+		</div>
+	</div>
+	<div id='nav_container'>
+		<div id='nav'></div>
+	</div>
+</div>
+<div style="visibility: hidden;">
+    <div id='round'>
+    	<div id='badge'></div>
+        <div class='round_content'>
+            <div class="competitor">
+                <img id='competitor_photo' alt=""/>
+                <input type="text" id="competitor_name"/>
+                <input type="text" id="what" />
+                <div id='popup'></div>
+                <input type="button" id='website' value='' disabled="disabled" />
+            </div>
+            <div class="cheerometer">
+                <input type="button" id="competitor_btn_yay" value="0" disabled="disabled"></input>
+                <input type="button" id="competitor_btn_nay" value="0" disabled="disabled"></input>
+
+                <div class="cheerometer_back">
+                    Live Audience Reaction
+                    <input type="text" id="totalBoos"></input>
+                    <input type="text" id="totalCheers"></input>
+                </div>
+                <input type="text" id="competitor_meter_yay"></input>
+                <input type="text" id="competitor_meter_nay"></input>
+                
+            </div>
+            <div id="judges">
+                <div id='judge'>
+                    <img id='judge_photo' />
+
+                    <input type="text" id="judge_meter_yay"></input>
+                    <input type="text" id="judge_meter_nay"></input>
+
+                    <input type="text" id='judge_name' />
+
+                    <input type="button" id='judge_btn_yay' value='' disabled="disabled" />
+                    <input type="button" id='judge_btn_nay' value='' disabled="disabled" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div pub-key="pub-f2e3b0b6-dfde-4718-900d-5f0323e37c4e" sub-key="sub-44931a80-447a-11e1-8be6-7b29c883eb65" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+<script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
+<script>
+    (function() {
+        var preload = [];
+        var x = (window.devicePixelRatio >= 2 ? '@2x' : '');
+        var c = 0;
+        var states = ['pressed','disabled','normal'];
+        var state, cb;
+        var cbs = ['boo','cheer'];
+        var pns = ['negative','positive'];
+        var z,y,i,j;
+        preload.push(new Image(55,20));
+        preload[c++].src='media/img/iTunes-Pressed' + x + '.png';
+        preload.push(new Image(21,23));
+        preload[c++].src='media/img/Badge-CompleteScorecard-Inactive-pressed' + x + '.png';
+        preload.push(new Image(21,23));
+        preload[c++].src='media/img/Badge-CompleteScorecard-Active-pressed' + x + '.png';
+        preload.push(new Image(21,23));
+        preload[c++].src='media/img/Badge-CompleteScorecard-Inactive-normal' + x + '.png';
+        preload.push(new Image(21,23));
+        preload[c++].src='media/img/Badge-CompleteScorecard-Active-normal' + x + '.png';
+
+        for (j = 0; j < 2; j++)
+        {
+        	cb = cbs[j];
+        	pn = pns[j];
+            preload.push(new Image(53,17));
+            preload[c++].src='media/img/meter-' + pn + x + '.png';
+            preload.push(new Image(126,34));
+        	preload[c++].src='media/img/meterLarge-' + pn + x + '.png';
+        	for (i = 0; i < 3; i++)
+      	  	{
+        		state = states[i];
+                preload.push(new Image(53,54));
+				preload[c++].src='media/img/btnLarge-' + cb + '-' + state + x + '.png';
+       			preload.push(new Image(86,30));
+				preload[c++].src='media/img/btn-' + cb + '-' + state + x + '.png';
+        	}
+        }
+
+
+    })();
+    function pubNubSubscribe(){
+        var channel = "peel-live-competition" + environment(); // CONNECT TO THIS CHANNEL
+        PUBNUB.subscribe({
+            channel  :  channel,
+            error    : function(e) {       // LOST CONNECTION. PUBNUB will auto-reconnect.
+                console.log(e)
+            },
+            callback : function(data) { // RECEIVED A MESSAGE.
+                //console.log(JSON.stringify(data));
+                Controller.ingest(data);
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>
+

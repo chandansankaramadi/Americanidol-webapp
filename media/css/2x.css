@@ -1,0 +1,162 @@
+.round {
+    width:320px;
+    height:372px;
+    background-image: url(../img/card-bg@2x.jpg);
+    background-color:#FAFAFA;
+    background-size: 320px 372px;
+}
+
+.badge {
+	width:67px;
+	height:67px;
+	float:right;
+	position:absolute;
+	left:230px;
+	top:8px;
+	background-size: 67px 67px;
+	background-image:url(../img/badge-votingClosed@2x.png);
+}
+
+.popup_active{
+    background-image:url(../img/Badge-CompleteScorecard-Active-normal@2x.png);
+}
+.popup_inactive{
+    background-image:url(../img/Badge-CompleteScorecard-Inactive-normal@2x.png);
+}
+.popup_active:active{
+    background-image:url(../img/Badge-CompleteScorecard-Active-pressed@2x.png);
+}
+.popup_inactive:active{
+    background-image:url(../img/Badge-CompleteScorecard-Inactive-pressed@2x.png);
+}
+#completed_content{
+    background-image:url(../img/CompetionPopover@2x.png);
+    background-size: 262px 195px;
+}
+/* ITUNES BUTTON */
+.website {
+    background-image:url(../img/iTunes@2x.png);
+    background-size: 55px 20px;
+}
+.website:active{
+    background-image:url(../img/iTunes-Pressed@2x.png);
+}
+.voted_off{
+    background-image:url(../img/Badge-Red@2x.png);
+    background-size: 58px 17px;
+}
+/* NAVIGATION BUTTONS */
+.nav{
+    background-image:url(../img/pagination-inactive@2x.png);
+    background-size:5px 5px;
+    width:5px;
+    height:5px;
+    display:inline-block;
+    margin:0px 2px;
+    position:relative;
+    z-index: 100;
+}
+.nav_selected{
+    background-image:url(../img/pagination-active@2x.png);
+    background-size:5px 5px;
+    width:5px;
+    height:5px;
+    display:inline-block;
+    margin:0px 2px;
+   	position:relative;
+    z-index: 100;
+}
+
+
+input.competitor_meter_yay {
+    z-index: 99;
+    background-size:126px 22px;
+    background-image: url(../img/meter-audiencePercentage-positive@2x.png);
+}
+input.competitor_meter_nay{
+    text-align: right;
+	z-index: 98;
+    background-size:126px 22px;
+    background-image: url(../img/meter-audiencePercentage-negative@2x.png);
+}
+
+input.totalCheers{
+    background-image: url(../img/meter-audienceTotal-positive@2x.png);
+    background-size: 61px 17px;
+}
+input.totalBoos{
+    background-image: url(../img/meter-audienceTotal-negative@2x.png);
+    background-size: 61px 17px;
+}
+
+input.judge_meter_yay {
+    z-index: 99;
+    background-size:53px 17px;
+    background-image: url(../img/meter-positive@2x.png);
+}
+input.judge_meter_nay{
+    text-align: right;
+	z-index: 98;
+    background-size:53px 17px;
+    background-image: url(../img/meter-negative@2x.png);
+}
+
+input.judge_btn_yay{
+	background-size:88px 30px;
+	background-image: url(../img/btn-cheer-normal@2x.png);
+}
+input.judge_btn_yay:disabled{
+	background-size:88px 30px;
+	background-image: url(../img/btn-cheer-disabled@2x.png);
+}
+input.judge_btn_yay:active{
+	background-size:88px 30px;
+	background-image: url(../img/btn-cheer-pressed@2x.png);
+}
+input.judge_btn_nay{
+	background-size:88px 30px;
+	background-image: url(../img/btn-boo-normal@2x.png);
+}
+input.judge_btn_nay:disabled{
+	background-size:88px 30px;
+	background-image: url(../img/btn-boo-disabled@2x.png);
+}
+input.judge_btn_nay:active{
+	background-size:88px 30px;
+	background-image: url(../img/btn-boo-pressed@2x.png);
+}
+
+
+input.competitor_btn_yay {
+    color:#10acfd;
+    float:right;
+    background-size:53px 54px;
+    background-image: url(../img/btnLarge-cheer-normal@2x.png);
+}
+input.competitor_btn_nay{
+    color:#ff6d02;
+    float:left;
+    background-size:53px 54px;
+    background-image: url(../img/btnLarge-boo-normal@2x.png);
+}
+input.competitor_btn_yay:active {
+    float:right;
+    background-size:53px 54px;
+    background-image: url(../img/btnLarge-cheer-pressed@2x.png);
+}
+input.competitor_btn_nay:active{
+    float:left;
+    background-size:53px 54px;
+    background-image: url(../img/btnLarge-boo-pressed@2x.png);
+}
+
+input.competitor_btn_nay:disabled{
+    float:left;
+    background-size:53px 54px;
+    background-image: url(../img/btnLarge-boo-disabled@2x.png);
+}
+input.competitor_btn_yay:disabled{
+    float:right;
+    background-size:53px 54px;
+    background-image: url(../img/btnLarge-cheer-disabled@2x.png);
+}
